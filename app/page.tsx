@@ -1,6 +1,16 @@
 // Final production readiness updates
 "use client";
 
+// Fixing TypeScript errors by adding appropriate types and ensuring proper initialization
+
+// Define types for product and event
+interface Product {
+	name: string;
+	category: string;
+	specs: string[];
+}
+
+// Update state types
 const WHATSAPP_NUMBER = "971502474482"; // Ensure WhatsApp number consistency
 
 import { useEffect, useRef, useState } from "react";
@@ -44,22 +54,22 @@ const CATEGORIES = ["All", "Wireless", "Switching", "Routing", "LTE/5G"];
 export default function Page() {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [selectedCategory, setSelectedCategory] = useState("All");
-	const [selectedProduct, setSelectedProduct] = useState(null);
-	const featuredRef = useRef(null);
+	const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+	const featuredRef = useRef<HTMLDivElement | null>(null);
 
-  	useEffect(() => {
-    		const interval = setInterval(() => {
-        			setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-              		}, 5000);
-                  		return () => clearInterval(interval);
-                      	}, []);
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+		}, 5000);
+		return () => clearInterval(interval);
+	}, []);
 
 	const filteredProducts =
 		selectedCategory === "All"
 			? PRODUCTS
 			: PRODUCTS.filter((product) => product.category === selectedCategory);
 
-	const handleCategoryClick = (category) => {
+	const handleCategoryClick = (category: string) => {
 		setSelectedCategory(category);
 		featuredRef.current?.scrollIntoView({ behavior: "smooth" });
 	};
@@ -67,7 +77,7 @@ export default function Page() {
 	const closeModal = () => setSelectedProduct(null);
 
 	useEffect(() => {
-		const handleKeyDown = (e) => {
+		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Escape") closeModal();
 		};
 		window.addEventListener("keydown", handleKeyDown);
