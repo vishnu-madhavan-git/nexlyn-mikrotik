@@ -1,20 +1,15 @@
-// Final production readiness updates
 "use client";
 
-// Fixing TypeScript errors by adding appropriate types and ensuring proper initialization
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-// Define types for product and event
+// Define types for product
 interface Product {
 	name: string;
 	category: string;
 	specs: string[];
 }
 
-// Update state types
-const WHATSAPP_NUMBER = "971502474482"; // Ensure WhatsApp number consistency
-
-import { useEffect, useRef, useState } from "react";
-import Head from "next/head"; // For SEO metadata
+const WHATSAPP_NUMBER = "971502474482";
 
 const HERO_SLIDES = [
 	{
@@ -51,10 +46,38 @@ const PRODUCTS = [
 
 const CATEGORIES = ["All", "Wireless", "Switching", "Routing", "LTE/5G"];
 
+// Memoized ProductCard component to prevent unnecessary re-renders
+const ProductCard = memo(({ product }: { product: Product }) => (
+	<div className="rounded-lg border p-6 text-center hover:shadow-md hover:border-neutral-700 transition transform hover:scale-105">
+		<div className="w-full h-40 bg-gradient-to-b from-gray-100 to-gray-200 rounded-md mb-4"></div>
+		<h3 className="text-lg font-bold text-neutral-800 mb-2">
+			{product.name}
+		</h3>
+		<span className="inline-block bg-neutral-100 text-neutral-600 text-xs font-medium px-2 py-1 rounded mb-4">
+			{product.category}
+		</span>
+		<ul className="text-sm text-neutral-600 mb-6">
+			{product.specs.map((spec, index) => (
+				<li key={index}>• {spec}</li>
+			))}
+		</ul>
+		<a
+			href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+				`Enquiry for MikroTik ${product.name} (${product.category})`
+			)}`}
+			target="_blank"
+			rel="noopener noreferrer"
+			className="inline-block bg-red-600 text-white text-sm font-medium py-2 px-4 rounded-full hover:bg-red-700 transition"
+		>
+			Enquire on WhatsApp
+		</a>
+	</div>
+));
+ProductCard.displayName = 'ProductCard';
+
 export default function Page() {
 	const [currentSlide, setCurrentSlide] = useState(0);
 	const [selectedCategory, setSelectedCategory] = useState("All");
-	const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 	const featuredRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
@@ -64,34 +87,21 @@ export default function Page() {
 		return () => clearInterval(interval);
 	}, []);
 
-	const filteredProducts =
-		selectedCategory === "All"
-			? PRODUCTS
-			: PRODUCTS.filter((product) => product.category === selectedCategory);
+	const filteredProducts = useMemo(
+		() =>
+			selectedCategory === "All"
+				? PRODUCTS
+				: PRODUCTS.filter((product) => product.category === selectedCategory),
+		[selectedCategory]
+	);
 
-	const handleCategoryClick = (category: string) => {
+	const handleCategoryClick = useCallback((category: string) => {
 		setSelectedCategory(category);
 		featuredRef.current?.scrollIntoView({ behavior: "smooth" });
-	};
-
-	const closeModal = () => setSelectedProduct(null);
-
-	const whatsappMessage = selectedProduct
-		? `Enquiry for MikroTik ${selectedProduct.name} (${selectedProduct.category})`
-		: "Hello, I’d like to enquire about MikroTik products";
+	}, []);
 
 	return (
-		<>
-			{/* SEO Metadata */}
-			<Head>
-				<title>NEXLYN Distribution - Trusted MikroTik B2B Distributor</title>
-				<meta
-					name="description"
-					content="NEXLYN Distribution is a trusted B2B distributor of MikroTik products, serving UAE, GCC, and export markets with reliable solutions."
-				/>
-			</Head>
-
-			<main className="min-h-screen bg-white text-neutral-900">
+		<main className="min-h-screen bg-white text-neutral-900">
 				{/* Hero Section */}
 				<header
 					className="relative w-full h-[500px] bg-gradient-to-b from-gray-100 to-white flex items-center justify-center"
@@ -200,34 +210,7 @@ export default function Page() {
 					</h2>
 					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 						{filteredProducts.map((product) => (
-							<div
-								key={product.name}
-								onClick={() => setSelectedProduct(product)}
-								className="rounded-lg border p-6 text-center hover:shadow-md hover:border-neutral-700 transition cursor-pointer transform hover:scale-105"
-							>
-								<div className="w-full h-40 bg-gradient-to-b from-gray-100 to-gray-200 rounded-md mb-4"></div>
-								<h3 className="text-lg font-bold text-neutral-800 mb-2">
-									{product.name}
-								</h3>
-								<span className="inline-block bg-neutral-100 text-neutral-600 text-xs font-medium px-2 py-1 rounded mb-4">
-									{product.category}
-								</span>
-								<ul className="text-sm text-neutral-600 mb-6">
-									{product.specs.map((spec, index) => (
-										<li key={index}>• {spec}</li>
-									))}
-								</ul>
-								<a
-									href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-										`Enquiry for MikroTik ${product.name} (${product.category})`
-									)}`}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="inline-block bg-red-600 text-white text-sm font-medium py-2 px-4 rounded-full hover:bg-red-700 transition"
-								>
-									Enquire on WhatsApp
-								</a>
-							</div>
+							<ProductCard key={product.name} product={product} />
 						))}
 					</div>
 				</section>
@@ -258,6 +241,5 @@ export default function Page() {
 					</div>
 				</footer>
 			</main>
-		</>
 	);
 }
