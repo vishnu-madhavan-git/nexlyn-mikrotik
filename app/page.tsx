@@ -76,14 +76,6 @@ export default function Page() {
 
 	const closeModal = () => setSelectedProduct(null);
 
-	useEffect(() => {
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "Escape") closeModal();
-		};
-		window.addEventListener("keydown", handleKeyDown);
-		return () => window.removeEventListener("keydown", handleKeyDown);
-	}, []);
-
 	const whatsappMessage = selectedProduct
 		? `Enquiry for MikroTik ${selectedProduct.name} (${selectedProduct.category})`
 		: "Hello, I’d like to enquire about MikroTik products";
@@ -101,7 +93,10 @@ export default function Page() {
 
 			<main className="min-h-screen bg-white text-neutral-900">
 				{/* Hero Section */}
-				<header className="relative w-full h-[400px] bg-white">
+				<header
+					className="relative w-full h-[500px] bg-gradient-to-b from-gray-100 to-white flex items-center justify-center"
+				>
+					<div className="absolute inset-0 bg-gradient-to-r from-gray-50 to-white opacity-90"></div>
 					{HERO_SLIDES.map((slide, index) => (
 						<div
 							key={index}
@@ -109,22 +104,30 @@ export default function Page() {
 								index === currentSlide ? "opacity-100" : "opacity-0"
 							}`}
 						>
-							<h1 className="text-4xl font-bold text-neutral-800 mb-4">
+							<h1 className="text-5xl font-extrabold text-neutral-800 mb-4">
 								{slide.title}
 							</h1>
-							<p className="text-lg text-neutral-600 mb-6">
+							<p className="text-xl text-neutral-600 mb-6">
 								{slide.subtitle}
 							</p>
-							<a
-								href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-									"Hello, I’d like to enquire about MikroTik products"
-								)}`}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="inline-block bg-red-600 text-white text-sm font-medium py-3 px-6 rounded-full hover:bg-red-700 transition"
-							>
-								WhatsApp Enquiry
-							</a>
+							<div className="flex gap-4">
+								<a
+									href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+										"Hello, I’d like to enquire about MikroTik products"
+									)}`}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="inline-block bg-red-600 text-white text-lg font-medium py-3 px-6 rounded-full hover:bg-red-700 transition"
+								>
+									WhatsApp Enquiry
+								</a>
+								<a
+									href="#categories"
+									className="inline-block border border-red-600 text-red-600 text-lg font-medium py-3 px-6 rounded-full hover:bg-red-50 transition"
+								>
+									View Products
+								</a>
+							</div>
 						</div>
 					))}
 
@@ -141,15 +144,43 @@ export default function Page() {
 					</div>
 				</header>
 
+				{/* Trust / Positioning Strip */}
+				<section className="bg-gray-50 py-8">
+					<div className="mx-auto max-w-6xl px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+						<div className="p-4">
+							<div className="text-2xl font-bold text-red-600 mb-2">✓</div>
+							<p className="text-sm text-neutral-700">
+								Official MikroTik Distributor
+							</p>
+						</div>
+						<div className="p-4">
+							<div className="text-2xl font-bold text-red-600 mb-2">✓</div>
+							<p className="text-sm text-neutral-700">
+								Serving UAE, GCC & Export Markets
+							</p>
+						</div>
+						<div className="p-4">
+							<div className="text-2xl font-bold text-red-600 mb-2">✓</div>
+							<p className="text-sm text-neutral-700">
+								B2B Pricing for Resellers
+							</p>
+						</div>
+						<div className="p-4">
+							<div className="text-2xl font-bold text-red-600 mb-2">✓</div>
+							<p className="text-sm text-neutral-700">Fast Logistics</p>
+						</div>
+					</div>
+				</section>
+
 				{/* Categories Section */}
-				<section className="mx-auto max-w-6xl px-4 py-14">
-					<h2 className="text-2xl font-semibold mb-6">Categories</h2>
-					<div className="flex flex-wrap gap-4">
+				<section id="categories" className="mx-auto max-w-6xl px-4 py-14">
+					<h2 className="text-3xl font-semibold mb-6">Categories</h2>
+					<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
 						{CATEGORIES.map((category) => (
 							<button
 								key={category}
 								onClick={() => handleCategoryClick(category)}
-								className={`px-4 py-2 rounded-full border text-sm font-medium transition-all duration-300 ${
+								className={`p-4 rounded-lg border text-sm font-medium transition-all duration-300 shadow-sm hover:shadow-md ${
 									selectedCategory === category
 										? "bg-red-600 text-white border-red-600"
 										: "border-neutral-300 text-neutral-700 hover:bg-neutral-100"
@@ -162,123 +193,44 @@ export default function Page() {
 					</div>
 				</section>
 
-				{/* Featured MikroTik Products Section */}
-				<section
-					ref={featuredRef}
-					className="mx-auto max-w-6xl px-4 py-14"
-				>
-					<h2 className="text-2xl font-semibold mb-2">
+				{/* Featured Products Section */}
+				<section ref={featuredRef} className="mx-auto max-w-6xl px-4 py-14">
+					<h2 className="text-3xl font-semibold mb-6">
 						Featured MikroTik Products
 					</h2>
-					<p className="text-neutral-600 mb-6">
-						Popular models requested by resellers & integrators
-					</p>
-					<div
-						className={`grid gap-6 sm:grid-cols-2 lg:grid-cols-3 transition-opacity duration-500 transform ${
-							filteredProducts.length > 0
-								? "opacity-100 translate-y-0"
-								: "opacity-0 -translate-y-4"
-						}`}
-					>
-						{filteredProducts.length > 0 ? (
-							filteredProducts.map((product) => (
-								<div
-									key={product.name}
-									onClick={() => setSelectedProduct(product)}
-									className="rounded-lg border p-6 text-center hover:shadow-md hover:border-neutral-700 transition cursor-pointer transform hover:scale-105"
-								>
-									<h3 className="text-lg font-bold text-neutral-800 mb-2">
-										{product.name}
-									</h3>
-									<span className="inline-block bg-neutral-100 text-neutral-600 text-xs font-medium px-2 py-1 rounded mb-4">
-										{product.category}
-									</span>
-									<ul className="text-sm text-neutral-600 mb-6">
-										{product.specs.map((spec, index) => (
-											<li key={index}>• {spec}</li>
-										))}
-									</ul>
-									<a
-										href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-											`Enquiry for MikroTik ${product.name} (${product.category})`
-										)}`}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="inline-block bg-red-600 text-white text-sm font-medium py-2 px-4 rounded-full hover:bg-red-700 transition"
-									>
-										Enquire on WhatsApp
-									</a>
-								</div>
-							))
-						) : (
-							<p className="text-center text-neutral-500">
-								No products available in this category.
-							</p>
-						)}
-					</div>
-				</section>
-
-				{/* Product Detail Modal */}
-				{selectedProduct && (
-					<div
-						className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-						role="dialog"
-						aria-modal="true"
-						aria-labelledby="product-name"
-						onClick={(e) => e.target === e.currentTarget && closeModal()}
-					>
-						<div
-							className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative mx-4 sm:mx-0"
-							onClick={(e) => e.stopPropagation()}
-						>
-							<h3
-								id="product-name"
-								className="text-2xl font-bold text-neutral-800 mb-4 text-center"
+					<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+						{filteredProducts.map((product) => (
+							<div
+								key={product.name}
+								onClick={() => setSelectedProduct(product)}
+								className="rounded-lg border p-6 text-center hover:shadow-md hover:border-neutral-700 transition cursor-pointer transform hover:scale-105"
 							>
-								{selectedProduct.name}
-							</h3>
-							<span className="inline-block bg-neutral-100 text-neutral-600 text-xs font-medium px-3 py-1 rounded mb-6 text-center">
-								{selectedProduct.category}
-							</span>
-							<ul className="text-sm text-neutral-700 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-y-2 list-disc list-inside">
-								{selectedProduct.specs.map((spec, index) => (
-									<li key={index}>{spec}</li>
-								))}
-							</ul>
-							<div className="flex justify-end gap-4">
-								<button
-									onClick={closeModal}
-									className="text-sm text-neutral-600 hover:text-neutral-800"
-								>
-									Close
-								</button>
+								<div className="w-full h-40 bg-gradient-to-b from-gray-100 to-gray-200 rounded-md mb-4"></div>
+								<h3 className="text-lg font-bold text-neutral-800 mb-2">
+									{product.name}
+								</h3>
+								<span className="inline-block bg-neutral-100 text-neutral-600 text-xs font-medium px-2 py-1 rounded mb-4">
+									{product.category}
+								</span>
+								<ul className="text-sm text-neutral-600 mb-6">
+									{product.specs.map((spec, index) => (
+										<li key={index}>• {spec}</li>
+									))}
+								</ul>
 								<a
 									href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-										`Enquiry for MikroTik ${selectedProduct.name} (${selectedProduct.category})`
+										`Enquiry for MikroTik ${product.name} (${product.category})`
 									)}`}
 									target="_blank"
 									rel="noopener noreferrer"
-									className="inline-block bg-red-600 text-white text-sm font-medium py-3 px-6 rounded-full hover:bg-red-700 transition"
+									className="inline-block bg-red-600 text-white text-sm font-medium py-2 px-4 rounded-full hover:bg-red-700 transition"
 								>
 									Enquire on WhatsApp
 								</a>
 							</div>
-						</div>
+						))}
 					</div>
-				)}
-
-				{/* Floating WhatsApp Button */}
-				<a
-					href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-						whatsappMessage
-					)}`}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="fixed bottom-5 right-5 bg-red-600 text-white text-sm font-medium py-3 px-4 rounded-full shadow-lg hover:bg-red-700 transition"
-					aria-label="Enquire on WhatsApp"
-				>
-					WhatsApp
-				</a>
+				</section>
 
 				{/* Footer */}
 				<footer className="border-t mt-14">
@@ -289,7 +241,8 @@ export default function Page() {
 						<div className="mb-2">UAE · GCC · Export</div>
 						<div className="mb-4">Contact: +971 502474482</div>
 						<p className="text-xs text-neutral-500 mb-4">
-							MikroTik® is a registered trademark of MikroTik. NEXLYN Distribution LLC is an independent distributor.
+							MikroTik® is a registered trademark of MikroTik. NEXLYN Distribution LLC
+							is an independent distributor.
 						</p>
 						<p className="text-xs text-neutral-400">
 							Site direction & UX by
