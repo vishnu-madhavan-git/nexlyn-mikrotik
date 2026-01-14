@@ -57,8 +57,8 @@ const ProductCard = memo(({ product }: { product: Product }) => (
 			{product.category}
 		</span>
 		<ul className="text-sm text-neutral-600 mb-6">
-			{product.specs.map((spec, index) => (
-				<li key={index}>• {spec}</li>
+			{product.specs.map((spec) => (
+				<li key={spec}>• {spec}</li>
 			))}
 		</ul>
 		<a
