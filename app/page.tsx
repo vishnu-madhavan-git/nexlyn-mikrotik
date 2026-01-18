@@ -522,8 +522,8 @@ const handleCloseModal = useCallback(() => {
 setSelectedProduct(null);
 }, []);
 
-const resellerMessage = generateResellerInquiry();
-const generalMessage = generateGeneralInquiry();
+const resellerMessage = useMemo(() => generateResellerInquiry(), []);
+const generalMessage = useMemo(() => generateGeneralInquiry(), []);
 
 return (
 <main className="min-h-screen bg-white text-neutral-900">
@@ -793,7 +793,7 @@ WhatsApp Us
 
 <div className="border-t border-neutral-800 pt-8 text-center">
 <p className="text-sm text-neutral-500 mb-3">
-MikroTik® is a registered trademark of Mikrotikls SIA. NEXLYN Distribution LLC is an independent authorized distributor.
+MikroTik® is a registered trademark of Mikrotik SIA. NEXLYN Distribution LLC is an independent authorized distributor.
 </p>
 <p className="text-xs text-neutral-600">
 © {new Date().getFullYear()} NEXLYN Distribution LLC. All rights reserved. | 
