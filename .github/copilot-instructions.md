@@ -60,4 +60,54 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 
 ---
 
-For any questions or clarifications, consult the `README.md` or the [Next.js Documentation](https://nextjs.org/docs).
+## Template Library Reference
+
+This project includes a comprehensive template library documentation system. See [`TEMPLATES.md`](../TEMPLATES.md) for:
+- Curated free, open-source templates across 6 categories
+- E-commerce storefronts, landing pages, CTAs, dashboards, portfolios, and blogs
+- Tech stack details, licenses, and best practices
+- Usage instructions and customization guidelines
+
+### Preferred Tech Stack for New Templates
+
+**Frontend Framework**
+- **Primary**: Next.js 14+ (App Router)
+- **Alternative**: Astro (for content-heavy sites)
+
+**Styling**
+- **Primary**: Tailwind CSS 4.x
+- **Component Library**: shadcn/ui
+
+**Language**
+- **TypeScript**: Always use TypeScript with strict mode
+
+**Icons**
+- **Primary**: lucide-react (as used in this project)
+
+### Code Style Conventions
+
+**Naming**
+- Components: PascalCase (`ProductCard.tsx`)
+- Utilities/hooks: kebab-case (`use-cart.ts`)
+- Variables/functions: camelCase
+- Constants: UPPER_SNAKE_CASE
+
+**React Patterns**
+- Use functional components only
+- Server Components by default (Next.js)
+- `memo`, `useCallback`, `useMemo` for optimization
+- Extract event handlers from JSX
+
+**TypeScript**
+- Prefer `type` over `interface` when possible
+- Always define prop types
+- Use const assertions for constants
+
+**Styling**
+- Mobile-first responsive design
+- Group Tailwind classes by category
+- Use semantic class names
+
+---
+
+For any questions or clarifications, consult the `README.md`, `TEMPLATES.md`, or the [Next.js Documentation](https://nextjs.org/docs).
